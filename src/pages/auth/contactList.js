@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View ,SectionList , FlatList ,Button ,ScrollView ,StyleSheet } from 'react-native'
+import { Text ,SectionList , StyleSheet } from 'react-native'
 import Row from './row'
 
 sectionHeader = obj =>  <Text>{obj.section.title} </Text>

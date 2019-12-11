@@ -6,6 +6,6 @@ import {name as appName} from './app.json';
 import Splash from './src/pages/intro/splash';
 import login from './src/pages/auth/login';
 import Switch from './src/pages/intro/switch';
-import Main from './src/pages/auth/main';
+import Main from './src/pages/intro/main';
 
-AppRegistry.registerComponent(appName, () => login);
+AppRegistry.registerComponent(appName, () => Splash);

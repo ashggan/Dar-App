@@ -6,27 +6,39 @@ import {
   Text, 
   Image,Button,Picker
 } from 'react-native';
+import Switch from './switch'
 
+
+class SplashScreen extends Component {
+  render(){
+    return (
+       <View style={styles.container}>
+         <Image source={require('./../../../img/logo.png')} style={styles.bg_img}></Image>
+         <Text style={ styles.title }>DAR  </Text>  
+       </View>
+   );  
+ }
+}
+
+export default class Splash  extends Component  {  
  
+    state = {
+      view : <SplashScreen />
+    } 
 
- 
-
-
-export default class Splash  extends Component  {
-   
-  state ={
-    showCon : false
+  componentDidMount() {
+    setTimeout( () => {
+       this.setState({view : <Switch /> })
+    }, 2000)  
   }
-   
-    
+
+  
+
   render(){
      return (
-        <View style={styles.container}>
-          <Image source={require('./../../../img/logo.png')} style={styles.bg_img}></Image>
-          <Text style={ styles.title }>DAR </Text>  
-        </View>
-     
-    );  
+         this.state.view
+        // <SplashScreen />
+    ) 
   }
  
 };
