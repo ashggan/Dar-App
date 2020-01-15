@@ -1,32 +1,36 @@
-
 import  React, { Component } from 'react';
-import {
-  StyleSheet,
-  View,
-  Text, 
-  Image,Button,Picker
-} from 'react-native';
-
+import { StyleSheet, View, Text,  Image } from 'react-native';
  
+class SplashScreen extends Component {
+  render(){
+    return (
+       <View style={styles.container}>
+         <Image source={require('./../../../img/logo.png')} style={styles.bg_img}></Image>
+         <Text style={ styles.title }>DAR  </Text>  
+       </View>
+   );  
+ }
+}
 
+export default class Splash  extends Component  {  
  
+    state = {
+      view : <SplashScreen />
+    } 
 
-
-export default class Splash  extends Component  {
-   
-  state ={
-    showCon : false
+  componentDidMount() {
+    setTimeout( () => {
+      this.props.navigation.navigate('switchRoute')
+    }, 2000)  
   }
-   
-    
+
+  
+
   render(){
      return (
-        <View style={styles.container}>
-          <Image source={require('./../../../img/logo.png')} style={styles.bg_img}></Image>
-          <Text style={ styles.title }>DAR </Text>  
-        </View>
-     
-    );  
+       
+         <SplashScreen />
+    ) 
   }
  
 };
