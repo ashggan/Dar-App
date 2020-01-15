@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 import React, { Component } from 'react'
 import { Button , View  ,StyleSheet ,TouchableHighlight  ,Text} from 'react-native'
 
 
+=======
+>>>>>>> 7a27d2492cef7232ffdbc793986d5494e522c96c
 export class ScreenComponentOne extends React.Component {
     render() {
       return (
@@ -33,11 +36,16 @@ export class ScreenComponentOne extends React.Component {
           }}>
           <Button
             title="Go to one"
+<<<<<<< HEAD
             onPress={() => this.props.navigation.navigate('switchRoute')}
+=======
+            onPress={() => this.props.navigation.navigate('routeNameOne')}
+>>>>>>> 7a27d2492cef7232ffdbc793986d5494e522c96c
           />
         </View>
       );
     }
+<<<<<<< HEAD
   }
 
   
@@ -115,3 +123,6 @@ export class ScreenComponentOne extends React.Component {
           resizeMode: 'contain',
          }, 
       });
+=======
+  }
+>>>>>>> 7a27d2492cef7232ffdbc793986d5494e522c96c

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+<<<<<<< HEAD
 import { Text, View ,StyleSheet, Image  ,TouchableHighlight } from 'react-native'
  
 export default class Switch extends Component {
@@ -11,6 +12,31 @@ export default class Switch extends Component {
     // console.log(this.state.check)
      this.setState(prevState => ({check : !prevState.check }) )
   }
+=======
+import { Text, View ,StyleSheet, Image ,Button ,TouchableHighlight } from 'react-native'
+class Footer extends Component {
+
+// continou =  () =>   onPress={() => this.props.navigation.navigate('routeNameTwo')}
+  render(){
+    return(
+      <View style={ styles.footer }> 
+         <Text  style={styles.FooterTxt}>Continue </Text>
+       </View>
+    )
+  }
+}
+
+export default class login extends Component {
+   
+  state = {
+    check : false
+ }
+  choose = () => {
+    console.log(this.state.check)
+     this.setState(prevState => ({check : !prevState.check }) )
+  }
+
+>>>>>>> 7a27d2492cef7232ffdbc793986d5494e522c96c
 
   render() {
       return (
@@ -44,11 +70,15 @@ export default class Switch extends Component {
               </View>
         
           </TouchableHighlight>
+<<<<<<< HEAD
 
           <TouchableHighlight style={ [styles.full , styles.footer]} 
                   onPress={() => this.props.navigation.navigate('mainPageRoute')} > 
                   <Text  style={styles.FooterTxt}>Continue </Text>
             </TouchableHighlight>
+=======
+          <Footer />
+>>>>>>> 7a27d2492cef7232ffdbc793986d5494e522c96c
       </View>
       )
   }

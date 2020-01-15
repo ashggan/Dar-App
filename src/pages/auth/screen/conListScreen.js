@@ -1,4 +1,5 @@
 import React from 'react';
+<<<<<<< HEAD
 import { Button, View ,ImageBackground ,TouchableHighlight } from 'react-native'; 
 
 
@@ -26,6 +27,29 @@ export default class ScreenComponentOne extends React.Component {
               
           </View>
       </View>         
+=======
+import { Button, View } from 'react-native'; 
+
+
+export default class ScreenComponentOne extends React.Component {
+  static navigationOptions = {
+    headerTitle  : 'First  '
+  }
+  render() {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          borderWidth: 25,
+          borderColor: 'teal',
+        }}>
+        <Button
+          title="Go to two"
+          onPress={() => this.props.navigation.navigate('routeNameTwo')}
+        />
+      </View>
+>>>>>>> 7a27d2492cef7232ffdbc793986d5494e522c96c
     );
   }
 }

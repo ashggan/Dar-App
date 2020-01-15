@@ -1,8 +1,14 @@
+<<<<<<< HEAD
 // import Nav from './nav'
 
 // export default Nav
  
 
+=======
+import Nav from './nav'
+
+export default Nav
+>>>>>>> 7a27d2492cef7232ffdbc793986d5494e522c96c
 
 // import React, { Component } from 'react'
 // import { Text, View ,StyleSheet,SectionList , FlatList ,Button ,ScrollView  } from 'react-native'
