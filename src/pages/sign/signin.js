@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Text, View ,StyleSheet ,SafeAreaView ,Image ,KeyboardAvoidingView,Modal ,TouchableHighlight,ScrollView,FlatList} from 'react-native'
-import { Input } from 'react-native-elements'
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import { Input } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/MaterialIcons';  
 import axios from 'react-native-axios' 
-import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
-import Loader from "react-native-modal-loader"
+import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'; 
+import Loader from "react-native-modal-loader";
 import Header from './../../components/Header'
  
 class Cuurency extends Component {
@@ -33,26 +33,21 @@ const ConfirmModal = props => (
             >
         <View style={styles.ModalConstaoner}>
             <View style={styles.ModalInnerContainer}>
-                {props.check == true &&<Image source={require('./../../../img/done.png')} />}
-                {props.check == false &&<Image source={require('./../../../img/error.png')} />}
+            <Image source={require('./../../../img/error.png')} />  
 
                 
             <Text style={{fontSize:24, marginTop:20}}> {props.title} </Text>
-            <Text style={{fontSize:16, marginTop:20}}> {props.subTitle} </Text>
-            {props.check == false && <Text 
-            onPress={  this.props.navigation.navigate('SignInRoute') }
-            style ={{
+            <Text style={{fontSize:16, marginTop:20}}> {props.subTitle} 
+            {props.check == false && <Text style ={{
                 color:'#E9B872'
             }} 
-            > Sign in </Text> } 
-          
-            {props.check == false &&<Text 
-            onPress={props.colse}
+            > Sign Up </Text> } 
+            </Text>
+             <Text   onPress={props.colse}
             style={{
                 marginTop:20,
                 color:'#B3433F'
-            }}>
-                 Close</Text> }
+            }}>  Close</Text>  
             
             </View>
         </View>
@@ -61,28 +56,16 @@ const ConfirmModal = props => (
 
 
 export default class Register extends Component {
-    state = {
-            name:'',
+    state = {      
             email :'',
-            password:'',
-            office:'',addres:'',
-            curency:'SDG',
-            type:'personal',
-            type:'per',
-            ERROR:'',PassError:'',
-            curs : ['Dollar','SDG'],
-            currancy:'',
-            order:false,
-            isLoading: false,
+            password:'',          
             modalVisible:false,
-            valid:false,
+            isLoading: false,
             ConfirmMsg:{
                 title : '',
                 subtitle:'', 
                 check:false, 
-            },
-           
-            
+            },   
     } 
 
     getHandler = key => {
@@ -90,62 +73,59 @@ export default class Register extends Component {
         console.log(this.state.name)
     }
  
-    renderItem =  ({item,index}) => {
-        if(this.state.currancy==  item){
-            return(
-                <RedCuurency    curency={item} select={() => this.setState({currancy:''})} ></RedCuurency>
-            )
-        }else{
-            return(
-                <Cuurency    curency={item}  select={() => this.setState({currancy:item})}></Cuurency>
-            )
-        }
-        
-    }
+    
 
     setModalVisible(visible) {
         this.setState({modalVisible: visible});
     }
 
     submit =  async () => { 
-        // this.setModalVisible(true)
-        this.setState({isLoading:true})
-         let data =  this.props.navigation.state.params.data 
-         let { name , email ,addres , password ,office ,currancy , ConfirmMsg} = this.state
-         this.validate(email)
-         console.log()
-         data = { ...data, name , email ,addres , password ,office,currancy }
-        let  SuccuessConfirmMsg = {
-            title : 'Welcome!',
-            subtitle:'Signed up successfully', 
+        this.showLoader()
+
+        let {   email   , password } = this.state
+
+        this.validate(email)
+
+        let  data = { email ,  password   } 
+
+        let  WrongPassword = {
+            title : 'Sorry!',
+            subtitle:'Wrong Password ', 
             check:true, 
         }
-        let ErroronfirmMsg  = {
+
+        let MSG  = {
             title : 'Sorry!',
-            subtitle:'Email alrady existed',
+            subtitle:'Email dosenot exist',
             check:false, 
+
         }
- 
+        
         try {   
-            await axios.post('https://dar-dashoard.herokuapp.com/clients/signup',data)
+            await axios.post('https://dar-dashoard.herokuapp.com/clients/signin',data)
             .then(  res =>  {
-                this.showLoader()
                 setTimeout(() => {  
-                    if(res.status == 201){
-                        console.log(res.data.newClient);
-                        this.setState({ConfirmMsg:SuccuessConfirmMsg})
-                        setTimeout(() => {
-                            this.setState({isLoading:false})  
-                            this.setModalVisible(false)
-                            let id = res.data.newClient.id
-                            console.log(data)
-                            this.props.navigation.navigate('PremissionRoute',{id}) 
-                        }, 2000); 
+                    this.setState({isLoading:false})  
+                    if(res.status == 202){
+                        console.log(res.data.data );  
+                        this.setState({ isLoading:false }) 
+                        this.props.navigation.navigate('mainNavRoute')
+
+
+                    // }else if(res.status == 203){
+                        console.log(res.data.data );
+                    //     this.setState({ConfirmMsg:WrongPassword,isLoading:false,modalVisible:true}) 
                     }else{
-                        this.setState({ConfirmMsg:ErroronfirmMsg}) 
+                        // console.log(res.data.data  );   
+                        MSG.subtitle = res.data.data
+                        console.log(MSG.subtitle  );   
+
+                        this.setState({ConfirmMsg:MSG,isLoading:false,modalVisible:true}) 
                     }
-                 }, 3000)    
-              })
+                 }, 2000)    
+                        
+                })
+                .catch(err => console.log('errror') )// this.props.navigation.navigate('SignInRoute')
         
         } catch (error) {
             console.log(error)
@@ -182,34 +162,28 @@ export default class Register extends Component {
     
     showLoader = () => {
         this.setState({ isLoading: true });
-    };
+      };
  
     render() {
-        let {name,email ,curs, addres,office,password,ConfirmMsg ,modalVisible} = this.state
-        let type =  this.props.navigation.state.params.data.type 
+        let {name,email ,curs, addres,office,password,ConfirmMsg} = this.state
+       
         return (
             <View style ={{flex :1,paddingLeft:30, paddingRight:30}}>
-                <Header title="Almost there... "  subTitle="jsut fill the following "/> 
+                <Header title="Almost there... ff"  subTitle="jsut fill the following "/> 
                 <View style={styles.LoaderContainer}>
                     <Loader loading={this.state.isLoading} color="#ff66be" /> 
                 </View>
                 <ConfirmModal 
-                    modalVisible={ modalVisible} 
-                    // title={ConfirmMsg.title} 
-                    // subTitle={ConfirmMsg.subtitle} 
-                    // check={ConfirmMsg.check}
-                    colse = {()=> this.setState({modalVisible:false})} /> 
+                    modalVisible={this.state.modalVisible} 
+                    title={ConfirmMsg.title} 
+                    subTitle={ConfirmMsg.subtitle} 
+                    check={ConfirmMsg.check}
+                    colse = {()=> this.setState({modalVisible:false})} />
 
                 <SafeAreaView style={styles.container}>
-                    <KeyboardAvoidingView   behavior="height" keyboardVerticalOffset={20}> 
+                    <KeyboardAvoidingView         behavior="height" keyboardVerticalOffset={20}> 
                        <ScrollView showsVerticalScrollIndicator={false}>
-                        <Input  
-                            containerStyle={{height:80}}
-                            value ={name}
-                            placeholder='Your name'
-                            onChangeText={ this.getHandler('name')}  
-                            errorStyle={{ color: 'red' }}
-                            leftIcon={  <Icon  name='person-outline' size={24} color='grey'  /> } />
+                         
 
                         <Input  
                             containerStyle={{height:80}}
@@ -229,44 +203,16 @@ export default class Register extends Component {
                             onChangeText={val =>  this.validPass(val)}   
                             leftIcon={  <Icon  name='lock-open' size={24} color='grey'  /> }    />   
 
-                        {type=="Business" &&
-                            <Input  
-                                containerStyle={{height:80}}
-                                value={office}
-                                placeholder='Your office'
-                                keyboardType="email-address"
-                                onChangeText={this.getHandler('office')}  
-                                leftIcon={  <Icon2  name='briefcase-outline' size={24} color='grey'  /> }   />
-                        }
-
-                        {type=="Business" &&
-                            <Input  
-                                containerStyle={{height:80}}
-                                value={addres}
-                                placeholder='Your Address'
-                                keyboardType="email-address"
-                                onChangeText={this.getHandler('addres')}  
-                                leftIcon={  <Icon2  name='map-marker-outline' size={24} color='grey'  /> }   />
-                        }
+                       
+ 
                         
-                        <View style={ styles.cuurency } >
-                            <Text>Currancy   </Text>
-                            <FlatList
-                                // horizontal={true}
-                                data={curs}
-                                numColumns={3}
-                                renderItem={this.renderItem}
-                                keyExtractor = {(item, index) => index.toString()}
-                            />
-                        </View>
+                         
 
                         <TouchableHighlight 
                             // disabled={ valid}
                             style={styles.termsBtn} 
-                            onPress={this.submit}
-                            // onPress={  this.props.navigation.navigate('SignInRoute') } 
-                            >
-                            <Text style={styles.termsBtnTxt} > Sign Up </Text>
+                            onPress = {this.submit} >
+                            <Text style={styles.termsBtnTxt} > Sign In </Text>
                         </TouchableHighlight>
                    
                         </ScrollView>

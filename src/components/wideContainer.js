@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Text, View ,StyleSheet, TouchableHighlight  ,Image } from 'react-native' 
 
-export default class Cont extends Component {
+export default class WideCont extends Component {
     render() {
         return (
             <TouchableHighlight   onPress={this.props.showDist} >
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     cont:{
         marginTop: 20,
         height: 150,
-        width : 100,
+        width : 160,
         backgroundColor:'#fff',
         marginRight: 15,
         borderRadius: 10,
@@ -41,4 +41,4 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 15,
     }
-})
+}) 

@@ -2,19 +2,22 @@ import React, { Component } from 'react'
 import { Text, View ,StyleSheet,Image ,TouchableHighlight } from 'react-native'
 
 export default class Notify extends Component {
+
     render() {
+        // const  data =  this.props.navigation.state.params.data
+
         return (
             <View style = {styles.container}>
                 <Text style = {styles.title} >   CAN WE NOTIFY YOU?   </Text>
 
                 <View style =  {styles.bgc}>
-                   <Image  source={require('./../../assets/notify.png')}  /> 
+                   <Image source={require('./../../assets/notify.png')}  /> 
                 </View>
                 <Text style={styles.txt}>Get notifications for new offers,  </Text>
                 <Text style={styles.txt}> and updates of your sales. </Text>
                 
                 <TouchableHighlight  style={[styles.sign  ]}
-               onPress = {() => this.props.navigation.navigate('typeRoute')}>
+               onPress = {() => this.props.navigation.navigate('mainNavRoute')}>
                  <Text style={styles.btnText}>Enable Push Notification   </Text>
                </TouchableHighlight>
                <Text style={styles.Btmtxt} onPress = {() => this.props.navigation.navigate('mainNavRoute')}> Do not allow </Text>
@@ -30,7 +33,7 @@ const styles = StyleSheet.create({
     container :{
         flex :1,
         alignItems:'center',
-        justifyContent:'space-around'
+        justifyContent: 'space-evenly'
         // backgroundColor :'teal'
     },
     Btmtxt:{
@@ -61,7 +64,8 @@ const styles = StyleSheet.create({
         fontSize : 14
     },
     bgc :{ 
-        height : '40%'
+        height : '40%',
+        // backgroundColor:'teal'
     },
     title :{
         textAlign : 'center',

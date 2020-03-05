@@ -3,8 +3,14 @@ import IntroNav from './src/pages/intro/nav'
 import { createStore } from 'redux' 
 import { Provider } from 'react-redux'
 import  districts  from './src/pages/api'
+import axios from 'react-native-axios'
 
-function districtsReduer (state ,action) {
+
+const initalState = {
+  districts:districts
+}  
+
+function districtsReduer (state = initalState ) {
   return state
 }
 const store = createStore(districtsReduer)

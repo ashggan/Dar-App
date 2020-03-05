@@ -1,209 +1,282 @@
 import React, { Component } from 'react'
-import { Text, View ,StyleSheet ,FlatList ,TouchableHighlight ,Image} from 'react-native'
-import { ActionSheet  ,Root} from 'native-base' 
-import ImagePicker from 'react-native-image-crop-picker';
-import {PermissionsAndroid} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';  
+import { Text, View ,StyleSheet ,TouchableHighlight ,FlatList ,ScrollView ,Modal , TextInput} from 'react-native'
+import NumericInput from 'react-native-numeric-input'
+import Field from './../../components/Field'
+import Input from './../../components/Input'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import Icon2 from 'react-native-vector-icons/MaterialIcons'
+import axios from 'react-native-axios'
 import RedBox from './../../components/RedBox'
-import  Box from './../../components/Box'
-
+import  Box from './../../components/Box' 
 
 export default class Details extends Component {
-    state = {
-        type : '',
-        category:'',index:'',length:0,
-        imgs:['empty','empty','empty','empty','empty','empty'],
-        types: ['Rent', 'Sell'],
-        cats: ['Apartment', 'Villa','House','Land','Load-bearing','Tower'],
-        
+
+    state ={
+        rooms:0, halls:0,  baths:0,price:0,size:0, Fas :[], selected:[],districts:[] ,floors :1,
+        loction:'',loction_name:'',address:'',owmer_type:'business',owner_id:1,status:'bending',
+        cats : ['Apartment', 'Villa','House'] , modalVisible:false,add_note:''
+    }
+
+    setModalVisible(visible) {
+        this.setState({modalVisible: visible});
     }
     
-    setType = val => {
-        this.setState( {  type : val  })
- 
-    }
+    setValue = (value,key) =>  {   if (value > 0 ) this.setState({[key]:value})}
+  
+    show = async ()=> {
+        const {rooms , halls ,baths , price ,size  ,add_note,address ,owmer_type,owner_id ,status ,floors} = this.state
+        const facilites = this.state.selected  
+        const imgs = this.props.navigation.state.params.imgs
+        // const property = { //...this.props.navigation.state.params.data , 
+            //   rooms , price ,size ,halls ,baths ,add_note,address ,owmer_type,owner_id,status,floors,img:'', type:'',category:''}
 
-    setCat = val => {
-        this.setState({ category : val })
- 
-    }
+        const property ={
+                type: "Sell",
+                category :'House',
+                // rooms:0 ,halls:0,baths :0,
+                size:"",price:0,
+                // loction:'',address:'jhjhjh',
+                // add_note:'',status :'rejected', 
+                // pin:false,facilites:[],owmer_type:'business',
+                // floors: 1,
+                // loction:2
+        }
 
-    show = () => {
-        const type = this.state.type
-        if(type==='') alert('Please select Purpose')
+        const formData = new FormData()
+        let headers =  {  'Content-Type': 'multipart/form-data'  } 
+
+        formData.append('property', JSON.stringify(property))
+        // imgs.forEach(file => {   console.log(file)  });
+
+        formData.append('files', imgs)
+        console.log(typeof formData)
+        try {
+            const res =   await axios.post('https://dar-dashoard.herokuapp.com/properties', formData ,{headers}  )
+            .then((res) => {
+                if(res.status=== 200){
+                  console.log('success')
+                }
+              }) 
+            //   .catch(err=> console.log(err))
+            console.log( typeof imgs)
+        } catch (error) {
+            console.log(error)
+        }
+      
         
-        const category = this.state.category
-        if(category==='') alert('Please select Category')
+    }
 
-        const imgs = this.state.imgs
-        // alert(`${type} and ${category} and ${imgs} `)
+    async componentDidMount(){
 
+        try {
+            const res = await axios.get('https://dar-dashoard.herokuapp.com/facilities')
+            const res2 = await axios.get('https://dar-dashoard.herokuapp.com/districts')
+            const districts = res2.data.Districts
+            this.setState({districts })
+            const Fas = res.data.Fas
+            this.setState({Fas}) 
+            // console.log(districts)
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    renderDistrict = ({item,index}) => {
+        return (
+            <TouchableHighlight style={{
+                backgroundColor:'#fff',
+                margin:20
+            }} onPress={()=>this.setLoction(item)}>
+               <Text>{item.name} </Text> 
+            </TouchableHighlight>
+            
+        )
+    }
+
+    setLoction = item => {
+        // alert(item.name)
+        this.setState({
+            loction:item.id,
+            loction_name:item.name,
+            // modalVisible:!modalVisible
+        })
+        this.setModalVisible(!this.state.modalVisible)
     }
 
     renderItem = ({item,index})  =>{
-        if(item === this.state.type){
+       
+        if(this.state.selected.includes(item)){
             return(
-                <RedBox  text={item} setVal={()=> this.setState({type:item})} /> 
- 
+                <RedBox  text={item.name} setVal={()=> this.removeFromSelected(item)}  /> 
             )
         }else{
-            return(
-                <Box  text={item} setVal={()=> this.setState({type:item})} /> 
-
+            return( 
+                <Box  text={item.name} setVal={()=> this.addToSeleted(item)} /> 
             )
         }
+
     }
 
-    renderItemCats = ({item,index})  =>{
-        if(item === this.state.category){
-            return(
-                <RedBox  text={item} setVal={()=> this.setState({category:item})} /> 
- 
-            )
-        }else{
-            return(
-                <Box  text={item} setVal={()=> this.setState({category:item})} /> 
-
-            )
-        }
+    addToSeleted = item => {
+        let selected =this.state.selected
+        selected.push(item)
+        this.setState({selected}) 
     }
 
-    setImage =  index => {
-        this.setState({index})
-        this.onClickAddNewImage()
+    removeFromSelected = item => {
+        let selected =this.state.selected 
+        selected = selected.filter(x => x !== item)
+        this.setState({selected}) 
     }
 
-    renderImgs  = ({item,index}) => {
-        if(item ==='empty'){
-            return(
-                <TouchableHighlight style={{width:90,height:90 , backgroundColor:'#eee' , justifyContent:'center', margin :10,alignItems:'center'}} 
-                onPress={() =>   this.setImage(index) }> 
-                <Icon style={[{color: '#A3A3A3'}]} size={25} name={'photo-camera'}/>  
-                </TouchableHighlight>
-            )
-        }
-        else {
-            return (
-                <TouchableHighlight style={{width:90,height:90 , backgroundColor:'#eee' , justifyContent:'center', margin :10,           alignItems:'center'}} 
-                    onPress={()  => this.setImage(index) }> 
-                    <Image source={{ uri :item.url}} style={styles.img} />
-                </TouchableHighlight>
-            )    
-        }
-       
-    }
- 
-    
-    onSelectImge = image => {
-        let list = this.state.imgs
-        const src = {url: image.path}
-        const index = this.state.index
-        let item = {
-        id : Date.now(),
-        url: image.path , 
-        }
-        list[index] = item 
-        console.log(list)
-        this.setState( {imgs: list})
-        this.setState(prevState => ({ length : prevState.length++ })  )
-    }
-        
-    lanchCamera = async () => {
-       
-        ImagePicker.openCamera({
-          width: 300,
-          height: 400,
-          // cropping: true
-        }).then(image => {
-          this.onSelectImge(image)
-          // console.log(image);
-        });
-       
-    }
-    
-    openGallery = () => {
-        ImagePicker.openPicker({
-          width: 300,
-          height: 400, 
-        }).then((image) => {
-          this.onSelectImge(image)
-          // console.log(image)
-        }); 
-    }
-     
-    onClickAddNewImage = () => {
-        const Buttons = ['Camera ' , 'Gallery' , 'cancel']
-        ActionSheet.show(  {
-          options :Buttons ,
-          cancelButtonIndex : 2,
-            title:'Add Image'
-          },
-          buttonIndex  => {
-            switch (buttonIndex) {
-              case 0:
-                this.lanchCamera()
-                break;
-              case 1: 
-                this.openGallery()
-                break;
-              default:
-                break;
-            }
-        })
-    }
- 
     render() {
-         
-            return (
-            <Root>   
-               <View style={styles.container} >  
-                    <Text style={styles.detailTitle}>Select property type </Text>
-                    <Text style={styles.subTitle}>Purpose </Text>
-                    <View style={{  justifyContent: 'flex-start', paddingTop:20, flexDirection:'row'}}>
-                        <FlatList 
-                            numColumns={3}
-                            data = {this.state.types}
-                            renderItem={this.renderItem}
-                            keyExtractor = {(item, index) => index.toString()}
-                        /> 
-                    </View>
-                    <Text style={styles.subTitle}>Category   </Text> 
-                    <View style={{  justifyContent: 'flex-start', paddingTop:20, flexDirection:'row'}}>
-                        <FlatList 
-                            numColumns={3}
-                            data = {this.state.cats}
-                            renderItem={this.renderItemCats}
-                            keyExtractor = {(item, index) => index.toString()}
-                        /> 
-                    </View>
 
-                    <TouchableHighlight style={{  paddingTop:40 ,width:'100%'}}>
-                        <View style={{ flexDirection:'row',position:'relative'}}>
-                            <Text>  Upload images  </Text>
-                            <Text style={{ position:'absolute',right:0}}>  min 3 ({this.state.length})    </Text>    
+        const {address,cats,loction_name,add_note} =this.state
+        const data = this.props.navigation.state.params.data
+         
+        if(  cats.includes(data.category)) {
+            return ( 
+                <ScrollView> 
+                    
+                    <View style={styles.container} >
+                        <Modal
+                            animationType="slide"
+                            transparent={false}
+                            visible={this.state.modalVisible}
+                            onRequestClose={() => {
+                                Alert.alert('Modal has been closed.');
+                            }}>
+                            <View style={{margin: 22, }}>
+                                <View>
+                                <FlatList 
+                                    data={this.state.districts}
+                                    renderItem={this.renderDistrict}
+                                    keyExtractor = {(item, index) => index.toString()}
+                                    />  
+                                </View>
+                            </View>
+                        </Modal>
+                        <Text style={styles.subTitle}>About { data.category} </Text>
+                         
+                        <View style={styles.box}>
+                            <Input 
+                                title="Size" 
+                                icon_name="currency-usd" 
+                                value ={ this.state.size}   
+                                label =  {<Text style={[{color: '#fff'}]}>m2 </Text>  } 
+                                setVal={value =>  this.setValue(value, "size")} 
+                            />
+
+                            <Input 
+                                title="Price" 
+                                icon_name="currency-usd" 
+                                value ={this.state.price} 
+                                currency-usd="currency-usd" 
+                                label =  {<Icon style={[{color: '#fff'}]} size={25} name="currency-usd" />} 
+                                setVal={value =>  this.setValue(value, "price")} 
+                                />
+
+                            <Field title="Rooms"value ={this.state.rooms} setValue={value =>  this.setValue(value, "rooms")}   />
+                            <Field title="Halls"value ={this.state.halls} setValue={value =>  this.setValue(value, "halls")}   />
+                            <Field title="Baths"value ={this.state.baths} setValue={value =>  this.setValue(value, "baths")}   />
+                            <Field title="floors"value ={this.state.floors} setValue={value =>  this.setValue(value, "floors")}   />
+                            
+                        </View>
+
+                        <View>
+                            <Text style={styles.subTitle}>Facilites   </Text>
+                            <View style={styles.box}>
+                                <FlatList 
+                                    data={this.state.Fas}
+                                    renderItem={this.renderItem}
+                                    numColumns={3}  
+                                    keyExtractor = {(item, index) => index.toString()}
+                                />
+                            </View>   
+                        </View>  
+                        <View>
+                            <Text style={styles.subTitle}>Districts  </Text>
+                            <View style={[styles.box,{justifyContent:'space-between'}]}>
+                                <Text>Select Districts </Text> 
+                                <Text>{loction_name} </Text>
+                                <TouchableHighlight onPress={() => {  this.setModalVisible(true); }}>
+                                    <Icon2 name="keyboard-arrow-down" style={[{color: '#111'}]} size={25} />
+                                </TouchableHighlight> 
+                            </View>
+                        </View>
+                        <View style={{  width:'100%'}}>
+                            <Text style={styles.subTitle}>Address    </Text>
+                                <TextInput 
+                                    value={address}
+                                    onChangeText={ val => this.setState({address:val})}
+                                    
+                                    style={{
+                                        // backgroundColor:'#eee',S
+                                        borderColor:'#eee',
+                                        borderWidth:1, 
+                                        justifyContent: "flex-start" 
+                                    }}
+                                />
+                        </View>
+                        <View style={{  width:'100%'}}>
+                        <Text style={styles.subTitle}>Additional Info  </Text>
+                                <TextInput 
+                                    value={add_note}
+                                    onChangeText={ val => this.setState({add_note:val})}
+                                    numberOfLines={4}
+                                    multiline={true}
+                                    style={{
+                                        // backgroundColor:'#eee',S
+                                        borderColor:'#eee',
+                                        borderWidth:1, 
+                                        justifyContent: "flex-start" 
+                                    }}
+                                />
                         </View>
                         
-                    </TouchableHighlight>
+                        <TouchableHighlight style={{position:'absolute',bottom:0, right:10, padding:20 }}  onPress={this.show}  >
+                            <Text>next</Text>
+                        </TouchableHighlight>       
+                    </View> 
+                    
+                </ScrollView>
+            )    
+        }else {
+            return ( 
+                <View style={styles.container} >
+                <Text style={styles.subTitle}>About { data.category} </Text>
+                {value => this.setValue(value, "price") }
+                    <View style={styles.box}>
+                        <Input 
+                            title="Size" 
+                            icon_name="currency-usd" 
+                            value ={ this.state.size}   
+                            label =  {<Text style={[{color: '#fff'}]}>m2 </Text>  } 
+                            setVal={value =>  this.setValue(value, "size")} 
+                        />
 
-                        <FlatList
-                            data={this.state.imgs}
-                            numColumns={3}
-                            renderItem={this.renderImgs}
-                            keyExtractor={(item,index)=> index.toString()}
-                         /> 
- 
-                         {/* {() => this.props.navigation.navigate('Home')  } */}
+                        <Input 
+                            title="Price" 
+                            icon_name="currency-usd" 
+                            value ={this.state.price} 
+                            currency-usd="currency-usd" 
+                            label =  {<Icon style={[{color: '#fff'}]} size={25} name="currency-usd" />} 
+                            setVal={value =>  this.setValue(value, "price")} 
+                            />
 
-                    <TouchableHighlight style={{position:'absolute',bottom:10, right:10, backgroundColor:'teal',padding:20 }}  onPress={this.show}  >
-                       <Text>next</Text>
-                    </TouchableHighlight>
-                 </View> 
-            </Root>      
+                         
+                    </View>
+                        <TouchableHighlight style={{position:'absolute',bottom:0, right:10, padding:20 }}  onPress={this.show} >
+                            <Text>next</Text>
+                        </TouchableHighlight>       
+            </View> 
             )
-      
+        }
+        
     }
 }
-
 
 const styles = StyleSheet.create({
     container: {
@@ -212,72 +285,26 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems:'flex-start'
     },
-    detailTitle:{
-        fontSize:18,
-        fontWeight:"bold",
-        color:'#8E8E8E',  
-        textAlign:'left',
-    },
     subTitle:{
         fontSize:16,
         textAlign:'left', 
-        paddingTop:10 
+        paddingTop:10 ,
+        marginBottom:20
     },
-    termBox:{
-        backgroundColor:'aqua',
-        height: '15%',
+    box:{
+        borderWidth:2,
+        borderColor: '#eee',
+        width:'100%', 
+        borderRadius:5, 
         flexDirection:'row',
-        marginTop: 30, 
+        flexWrap:'wrap',
+        // marginTop:20,
+        padding:20,  
+
     },
-    termCheck:{
-        width:'30%',height:'100%',
-        justifyContent:'center',
-        alignItems:'center',
-        backgroundColor:'#F0D8D8',
-        
-    },
-    termTxt:{
-        width:'70%',height:'100%',
-        justifyContent:'center',
-        alignItems:'center',
-        backgroundColor:'#fff',
-        paddingLeft:20
-    },
-    termSub :{
-        color:'gray'
-    },
-    agree:{
-        backgroundColor:'#23D25B',
-        width:'100%',
-        height:'100%',
-        position:'absolute',
-        top:0 , left:0,
-        zIndex:1, 
-        display: 'none',
-        justifyContent:'center',
-        alignItems:'center'
-    },
-    agreeTxt:{
-        color: '#fff',
-        fontSize: 14
-    },
-    termsBtn :{
-        // width: '100%',
-        backgroundColor: '#23D25B',
-        marginTop: 30,
-        alignSelf:'center',
-        height:'12%',
-        justifyContent:'center',
-        alignItems:'center',
-        borderRadius:5,        
-    },
-    termsBtnTxt:{
-        color:'#fff',
-        fontSize: 16
-    },
-    img:{ 
-        width: '100%',
-        height:'100%',
-        resizeMode : 'cover'
+    formField:{
+        marginTop:20,
+        alignItems:'flex-start',
+         
     }
 })

@@ -1,44 +1,46 @@
 import React, { Component } from 'react'
-<<<<<<< HEAD
-import { Text, View ,StyleSheet, Image  ,TouchableHighlight } from 'react-native'
- 
+import { Text, View ,StyleSheet, Image  ,TouchableHighlight ,FlatList } from 'react-native'
+import Lang from './../../components/Lang' 
+
 export default class Switch extends Component {
    
   state = {
-    check : false
+    lang:'',
+    languages : [
+    {  name:'eng' , title:'English'  , img :  require('./../../../img/en.png'),check : false},
+    {  name:'ar' ,  title:'العربية' , img : require('./../../../img/ar.png'),check : false},
+  ]
+     
   }
-
+ 
   choose = () => {
     // console.log(this.state.check)
      this.setState(prevState => ({check : !prevState.check }) )
   }
-=======
-import { Text, View ,StyleSheet, Image ,Button ,TouchableHighlight } from 'react-native'
-class Footer extends Component {
 
-// continou =  () =>   onPress={() => this.props.navigation.navigate('routeNameTwo')}
-  render(){
-    return(
-      <View style={ styles.footer }> 
-         <Text  style={styles.FooterTxt}>Continue </Text>
-       </View>
-    )
+  selectLang = (item,index) => {
+    let langList =  this.state.languages 
+    langList[index].check = !langList[index].check 
+    if(index == 0 )  langList[1].check = false
+    else    langList[0].check = false 
+    
+    this.setState({languages:langList, lang:langList[index].name}) 
   }
-}
+  navigateTo = () => {
+  
+    let lang = this.state.lang 
+    if(lang=='')  alert('Select language please')
 
-export default class login extends Component {
-   
-  state = {
-    check : false
- }
-  choose = () => {
-    console.log(this.state.check)
-     this.setState(prevState => ({check : !prevState.check }) )
+    else   this.props.navigation.navigate('mainPageRoute',{lang})
+ 
   }
-
->>>>>>> 7a27d2492cef7232ffdbc793986d5494e522c96c
+  
+  renderItem =  ({item,index})   => {
+    return (<Lang name= { item.title}  flag={item.img} selectLang={()=> this.selectLang(item,index)} check = {item.check} />)
+  } 
 
   render() {
+    const language  = this.state.languages 
       return (
        <View style={styles.container}>
           <View style={styles.header}>
@@ -50,35 +52,19 @@ export default class login extends Component {
           </View>
           {/* { this.state.lang.map(lan => (<Lang  name={lan.name}  img={this.img}  />) ) }    */}
           
-          <TouchableHighlight style={ styles.full } onPress={this.choose}  >
-              <View style={ styles.fullBtn } >
-                <Image style={styles.langImg}
-                source={require('./../../../img/en.png')}/>
-                <Text  style={styles.LangText}> English  </Text>  
-                { this.state.check ? <Image style={styles.check}
-                source={require('./../../../img/check.png')}/> : null }
-              </View>
-          </TouchableHighlight>
-
-          <TouchableHighlight style={ styles.full } onPress={this.choose}  >
-              <View style={ styles.fullBtn } >
-                <Image style={styles.langImg}
-                source={require('./../../../img/ar.png')}/>
-                <Text  style={styles.LangText}> العربية  </Text>  
-                { !this.state.check ? <Image style={styles.check}
-                source={require('./../../../img/check.png')}/> : null }    
-              </View>
-        
-          </TouchableHighlight>
-<<<<<<< HEAD
+          <FlatList 
+            style={{  width:'100%'  }}
+            data={language}
+            renderItem={this.renderItem}
+            keyExtractor={(item,index)=> index.toString()}
+ 
+          />
+           {/* <Lang /> */}
 
           <TouchableHighlight style={ [styles.full , styles.footer]} 
-                  onPress={() => this.props.navigation.navigate('mainPageRoute')} > 
+                  onPress={this.navigateTo} > 
                   <Text  style={styles.FooterTxt}>Continue </Text>
-            </TouchableHighlight>
-=======
-          <Footer />
->>>>>>> 7a27d2492cef7232ffdbc793986d5494e522c96c
+          </TouchableHighlight>
       </View>
       )
   }
