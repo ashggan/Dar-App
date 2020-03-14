@@ -120,10 +120,10 @@ export default class ListPage extends Component {
         return (
             <View style={styles.container}>
                 <View style={{ 
-                    width:'100%',
-                    backgroundColor:'#B3433F',
-                    padding:30, 
-                }}>
+                        width:'100%',
+                        backgroundColor:'#B3433F',
+                        padding:30, 
+                    }}>
                     <Input  
                         placeholder='any where'  inputContainerStyle={{
                             backgroundColor: '#893430',
@@ -131,15 +131,15 @@ export default class ListPage extends Component {
                             borderBottomWidth:0, 
                         }}
                         leftIcon={  <Icon  name='search' size={24} color='white'  /> }/>   
-                
-                
                 </View>
 
                 <View   style={[styles.container,{ padding:20 ,  }]}>
                     {/* <Text style={styles.title}>Feature  Districts  </Text>  */}
                     { this.props.navigation.state.params.name &&  
                     <View>
-                        <Text style={{fontSize:22,color:'#222',marginBottom:7}} >{this.props.navigation.state.params.name }</Text>
+                        <Text style={{fontSize:22,color:'#222',marginBottom:7}} >
+                            {this.props.navigation.state.params.name }
+                        </Text>
                     </View> }
                      
                         <FlatList    

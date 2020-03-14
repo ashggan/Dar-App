@@ -65,11 +65,9 @@ const DisplayProperties = createSwitchNavigator({
   ListPage : {screen : ListPage, },
   singleProp : {screen : singleProp,  },
   Home : {screen : Home,  },
-  
   Filter : {screen : Filter,
     navigationOptions:{   
       tabBarVisible: false,
-
   } },
 },{
   initialRouteName : 'Home',
@@ -107,7 +105,7 @@ const ManinNavigator = createMaterialBottomTabNavigator({
           </View>),  
         
   }  }, 
-  Profile  : {screen : Home,
+  Profile  : {screen : Profile,
     navigationOptions:{  
       tabBarLabel:'Profile',  
       tabBarIcon: ({ tintColor }) => (  
@@ -127,7 +125,7 @@ const ManinNavigator = createMaterialBottomTabNavigator({
   }}, 
   
 },{
-  initialRouteName : 'Home',
+  initialRouteName : 'Home', 
   activeColor: '#B3433F',
   inactiveColor: '#BAC1C9',
   textColor: '#BAC1C9',
@@ -152,7 +150,7 @@ const IntroNavigator = createSwitchNavigator({
     SignInRoute:SignIn ,
     mainNavRoute : ManinNavigator
   },{
-    initialRouteName :'mainNavRoute'
+    initialRouteName :'SplashRoute'
 });
 
 const IntroNav = createAppContainer(IntroNavigator);

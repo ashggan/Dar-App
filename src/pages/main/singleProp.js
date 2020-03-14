@@ -61,7 +61,8 @@ export default class singleProp extends Component {
                 <View style={{height: 250  }}>
                     <Image source={require('./../../assets/kh.jpg')}  style={styles.fullImg} />
                     <View style={styles.imgCont}>
-                        <Icon   onPress={() => this.props.navigation.navigate('ListPage')} style={styles.backIcon}  size={20} name="arrow-left" /> 
+                        <Icon   onPress={() => this.props.navigation.navigate('ListPage')} 
+                        style={styles.backIcon}  size={20} name="arrow-left" /> 
                         <Text style={styles.title}>{data.category}   </Text>
                         <Text style={styles.subTitle}>{loction},  {data.address}   </Text>
                     </View>
@@ -70,7 +71,7 @@ export default class singleProp extends Component {
                             <Icon   onPress={() => goBack()}  style={styles.iconStyle}  size={16}  name="share-alt" />    
                         </View>
                         <View style={styles.innerIconCont}>
-                            <Icon  onPress={() => this.mark(data.id)}  style={styles.iconStyle}  size={16}  name="star" /> 
+                            <Icon  onPress={() => this.mark(data.id)}  style={styles.iconStyle}  size={16}  name="star-o" /> 
                         </View> 
                     </View>
                 </View>  

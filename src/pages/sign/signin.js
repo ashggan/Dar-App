@@ -136,12 +136,19 @@ export default class Register extends Component {
     validate = (text) => {
         // console.log(text);
         let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
-        if(reg.test(text) === false)
+        if (!isNaN(text)) 
+        {
+            this.setState({ERROR:'Wrong number'})
+            this.setState({email:text})
+            return false; 
+        } 
+        else if(reg.test(text) === false)
         { 
         this.setState({ERROR:'Incorrect Email'})
         this.setState({email:text})
         return false;
-          }
+        }
+        
         else {
           this.setState({email:text,ERROR:''}) 
         }
@@ -169,7 +176,7 @@ export default class Register extends Component {
        
         return (
             <View style ={{flex :1,paddingLeft:30, paddingRight:30}}>
-                <Header title="Almost there... ff"  subTitle="jsut fill the following "/> 
+                <Header title="Almost there..."  subTitle="jsut fill the following "/> 
                 <View style={styles.LoaderContainer}>
                     <Loader loading={this.state.isLoading} color="#ff66be" /> 
                 </View>
@@ -188,7 +195,7 @@ export default class Register extends Component {
                         <Input  
                             containerStyle={{height:80}}
                             value={email}
-                            placeholder='Your Email'
+                            placeholder='  Email or Phone'
                             keyboardType="email-address" 
                             errorMessage={this.state.ERROR}
                             onChangeText={val =>  this.validate(val)}  
@@ -202,11 +209,6 @@ export default class Register extends Component {
                             errorMessage={this.state.PassError}
                             onChangeText={val =>  this.validPass(val)}   
                             leftIcon={  <Icon  name='lock-open' size={24} color='grey'  /> }    />   
-
-                       
- 
-                        
-                         
 
                         <TouchableHighlight 
                             // disabled={ valid}
